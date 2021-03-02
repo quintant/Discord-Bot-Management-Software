@@ -1,3 +1,4 @@
+from UILayer.membersMenu import MembersMenu
 from UILayer.serverMenu import ServerMenu
 from UILayer.mainMenu import MainMenu
 from UILayer.loginScreen import LoginScreen
@@ -56,5 +57,9 @@ class UIController:  # Sigurjón Ingi
     def menuServer(self, dirStr):
         screen = ServerMenu(self, dirStr)
         screen.show()
+
+    def listMembers(self, dirStr, guild):
+        screen = MembersMenu(self, dirStr)
+        screen.membersList(guild)
 
     

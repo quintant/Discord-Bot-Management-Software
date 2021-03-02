@@ -161,7 +161,7 @@ class uiBlocks:
             stdscr.refresh()
             keypress = stdscr.getch()
         if keypress == 27:
-            return None
+            return -1
         return items[index + offset]
 
     def printHeader(stdscr: curses.initscr, dirStr: str):
@@ -182,6 +182,8 @@ class uiBlocks:
                 line,
                 curses.color_pair(logo),
             )
+        if len(dirStr) >= cols -2:
+            dirStr = ".../" +  dirStr[-cols+6:]
         stdscr.addstr(7, (cols - len(dirStr))//2, dirStr)
         stdscr.refresh()
 

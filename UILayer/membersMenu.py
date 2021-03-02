@@ -2,13 +2,13 @@ import curses
 import UILayer.uiBlocks as uiBlocks
 
 
-class ServerMenu: #Sigurjón Ingi
+class MembersMenu: #Sigurjón Ingi
     """ Class for the server menu"""
 
     def __init__(self, controller, dirStr: str) -> None:
         self.controller = controller
         self.user = controller.user
-        self.dirStr = dirStr + "/SeverMenu"
+        self.dirStr = dirStr + "/MembersMenu"
         self.stdscr = controller.stdscr
         self.stdscr.clear()
         uiBlocks.uiBlocks.printHeader(self.stdscr, self.dirStr)
@@ -31,7 +31,7 @@ class ServerMenu: #Sigurjón Ingi
             self.stdscr.clear()
             uiBlocks.uiBlocks.printHeader(self.stdscr, self.dirStr)
             selected = uiBlocks.uiBlocks.selectorBoxColumns(self.stdscr, menuItems)
-            if selected != -1:
+            if selected != None:
                 self.stdscr.clear()
                 uiBlocks.uiBlocks.printHeader(self.stdscr, self.dirStr)
                 Selection = [f"View {selected[1]}", "Retry", "Back"]
@@ -45,21 +45,33 @@ class ServerMenu: #Sigurjón Ingi
         else:
             return 0
 
-    def selectedServer(self, server):
-        menuItems = [
-            "Members",
-            "Details",
-            "Back"
-        ]
+    def membersList(self, guild):
+        menuItems = []
+        for member in guild.members:
+            menuItems.append(
+                [member,
+                f"Name {member.display_name}",
+                f"Members {member.name}",
+                f"Owner {member.nick}",
+                f"Region {member.top_role.name}"
+                ])
+
         selected = None
-        DIRSTR = f"/{server.name}"
-        self.dirStr += DIRSTR
-        while selected != "Back":
+        # while selected != "Back":
+        while selected is None:
             self.stdscr.clear()
             uiBlocks.uiBlocks.printHeader(self.stdscr, self.dirStr)
-            selected = uiBlocks.uiBlocks.selectorBox(self.stdscr, menuItems)
-            if selected == "Members":
-                self.controller.listMembers(self.dirStr, server)
+            selected = uiBlocks.uiBlocks.selectorBoxColumns(self.stdscr, menuItems)
+            if selected != -1:
+                self.stdscr.clear()
+                uiBlocks.uiBlocks.printHeader(self.stdscr, self.dirStr)
+                Selection = [f"View {selected[1]}", "Retry", "Back"]
+                sel = uiBlocks.uiBlocks.selectorBox(self.stdscr, Selection)
+                if sel == Selection[2]:
+                    break
+                elif sel == Selection[0]:
+                    self.selectedServer(selected[0])
+                selected = None
 
-
-        self.dirStr = self.dirStr[:-len(DIRSTR)]
+        else:
+            return 0
